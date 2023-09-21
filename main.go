@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-
-	"github.com/Khan/genqlient/graphql"
 )
 
 type authedTransport struct {
@@ -28,19 +26,7 @@ func main() {
 		}
 	}()
 
-	key := os.Getenv("GITHUB_TOKEN")
-	if key == "" {
-		err = fmt.Errorf("must set GITHUB_TOKEN=<github token>")
-		return
-	}
-
-	httpClient := http.Client{
-		Transport: &authedTransport{
-			key:     key,
-			wrapped: http.DefaultTransport,
-		},
-	}
-	graphqlClient := graphql.NewClient("https://api.cirrus-ci.com/graphql", &httpClient)
+	graphqlClient := NewClient("test")
 
 	switch len(os.Args) {
 	case 1:

@@ -1,6 +1,6 @@
 module github.com/sebastienvermeille/gocirrus-graphql-client
 
-go 1.14
+go 1.18
 
 require (
 	github.com/Khan/genqlient v0.6.0 // indirect

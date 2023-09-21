@@ -1,9 +1,9 @@
 schema: resources/graphql/schema/cirrus-ci.schema.graphql
 operations:
   - resources/graphql/client/queries.graphql
-generated: cirrusci_client.go
+generated: generated.go
 ## needed since it doesn't match the directory name:
-package: client
+package: cirrus
 
 # We bind github's DateTime scalar type to Go's time.Time (which conveniently
 # already defines MarshalJSON and UnmarshalJSON).  This means genqlient will

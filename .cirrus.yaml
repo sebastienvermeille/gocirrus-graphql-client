@@ -1,0 +1,5 @@
+container:
+  image: node:latest
+
+sample_task:
+  script: echo test

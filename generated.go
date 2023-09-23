@@ -4,9 +4,283 @@ package cirrus
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 
 	"github.com/Khan/genqlient/graphql"
 )
+
+// Build status.
+type BuildStatus string
+
+const (
+	BuildStatusCreated       BuildStatus = "CREATED"
+	BuildStatusNeedsApproval BuildStatus = "NEEDS_APPROVAL"
+	BuildStatusTriggered     BuildStatus = "TRIGGERED"
+	BuildStatusExecuting     BuildStatus = "EXECUTING"
+	BuildStatusFailed        BuildStatus = "FAILED"
+	BuildStatusCompleted     BuildStatus = "COMPLETED"
+	BuildStatusAborted       BuildStatus = "ABORTED"
+	BuildStatusErrored       BuildStatus = "ERRORED"
+)
+
+// __getRepositoryBranchStatusInput is used internally by genqlient
+type __getRepositoryBranchStatusInput struct {
+	Platform       string `json:"Platform"`
+	Owner          string `json:"Owner"`
+	RepositoryName string `json:"RepositoryName"`
+	Branch         string `json:"Branch"`
+}
+
+// GetPlatform returns __getRepositoryBranchStatusInput.Platform, and is useful for accessing the field via an interface.
+func (v *__getRepositoryBranchStatusInput) GetPlatform() string { return v.Platform }
+
+// GetOwner returns __getRepositoryBranchStatusInput.Owner, and is useful for accessing the field via an interface.
+func (v *__getRepositoryBranchStatusInput) GetOwner() string { return v.Owner }
+
+// GetRepositoryName returns __getRepositoryBranchStatusInput.RepositoryName, and is useful for accessing the field via an interface.
+func (v *__getRepositoryBranchStatusInput) GetRepositoryName() string { return v.RepositoryName }
+
+// GetBranch returns __getRepositoryBranchStatusInput.Branch, and is useful for accessing the field via an interface.
+func (v *__getRepositoryBranchStatusInput) GetBranch() string { return v.Branch }
+
+// getRepositoryBranchStatusOwnerRepository includes the requested fields of the GraphQL type Repository.
+type getRepositoryBranchStatusOwnerRepository struct {
+	Id     string                                                                   `json:"id"`
+	Builds getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnection `json:"builds"`
+}
+
+// GetId returns getRepositoryBranchStatusOwnerRepository.Id, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepository) GetId() string { return v.Id }
+
+// GetBuilds returns getRepositoryBranchStatusOwnerRepository.Builds, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepository) GetBuilds() getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnection {
+	return v.Builds
+}
+
+// getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnection includes the requested fields of the GraphQL type RepositoryBuildsConnection.
+// The GraphQL type's documentation follows.
+//
+// A connection to a list of items.
+type getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnection struct {
+	// a list of edges
+	Edges []getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdge `json:"edges"`
+}
+
+// GetEdges returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnection.Edges, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnection) GetEdges() []getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdge {
+	return v.Edges
+}
+
+// getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdge includes the requested fields of the GraphQL type RepositoryBuildEdge.
+// The GraphQL type's documentation follows.
+//
+// An edge in a connection
+type getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdge struct {
+	// The item at the end of the edge
+	Node getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild `json:"node"`
+}
+
+// GetNode returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdge.Node, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdge) GetNode() getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild {
+	return v.Node
+}
+
+// getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild includes the requested fields of the GraphQL type Build.
+type getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild struct {
+	Status                BuildStatus                                                                                                                       `json:"status"`
+	BuildCreatedTimestamp int                                                                                                                               `json:"buildCreatedTimestamp"`
+	ChangeMessage         string                                                                                                                            `json:"changeMessage"`
+	DurationInSeconds     int                                                                                                                               `json:"durationInSeconds"`
+	Initializer           getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo `json:"-"`
+}
+
+// GetStatus returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild.Status, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) GetStatus() BuildStatus {
+	return v.Status
+}
+
+// GetBuildCreatedTimestamp returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild.BuildCreatedTimestamp, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) GetBuildCreatedTimestamp() int {
+	return v.BuildCreatedTimestamp
+}
+
+// GetChangeMessage returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild.ChangeMessage, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) GetChangeMessage() string {
+	return v.ChangeMessage
+}
+
+// GetDurationInSeconds returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild.DurationInSeconds, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) GetDurationInSeconds() int {
+	return v.DurationInSeconds
+}
+
+// GetInitializer returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild.Initializer, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) GetInitializer() getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo {
+	return v.Initializer
+}
+
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) UnmarshalJSON(b []byte) error {
+
+	if string(b) == "null" {
+		return nil
+	}
+
+	var firstPass struct {
+		*getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild
+		Initializer json.RawMessage `json:"initializer"`
+		graphql.NoUnmarshalJSON
+	}
+	firstPass.getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild = v
+
+	err := json.Unmarshal(b, &firstPass)
+	if err != nil {
+		return err
+	}
+
+	{
+		dst := &v.Initializer
+		src := firstPass.Initializer
+		if len(src) != 0 && string(src) != "null" {
+			err = __unmarshalgetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo(
+				src, dst)
+			if err != nil {
+				return fmt.Errorf(
+					"unable to unmarshal getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild.Initializer: %w", err)
+			}
+		}
+	}
+	return nil
+}
+
+type __premarshalgetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild struct {
+	Status BuildStatus `json:"status"`
+
+	BuildCreatedTimestamp int `json:"buildCreatedTimestamp"`
+
+	ChangeMessage string `json:"changeMessage"`
+
+	DurationInSeconds int `json:"durationInSeconds"`
+
+	Initializer json.RawMessage `json:"initializer"`
+}
+
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) MarshalJSON() ([]byte, error) {
+	premarshaled, err := v.__premarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(premarshaled)
+}
+
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild) __premarshalJSON() (*__premarshalgetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild, error) {
+	var retval __premarshalgetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild
+
+	retval.Status = v.Status
+	retval.BuildCreatedTimestamp = v.BuildCreatedTimestamp
+	retval.ChangeMessage = v.ChangeMessage
+	retval.DurationInSeconds = v.DurationInSeconds
+	{
+
+		dst := &retval.Initializer
+		src := v.Initializer
+		var err error
+		*dst, err = __marshalgetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo(
+			&src)
+		if err != nil {
+			return nil, fmt.Errorf(
+				"unable to marshal getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuild.Initializer: %w", err)
+		}
+	}
+	return &retval, nil
+}
+
+// getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser includes the requested fields of the GraphQL type User.
+type getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser struct {
+	Typename  string `json:"__typename"`
+	AvatarURL string `json:"avatarURL"`
+}
+
+// GetTypename returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser.Typename, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser) GetTypename() string {
+	return v.Typename
+}
+
+// GetAvatarURL returns getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser.AvatarURL, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser) GetAvatarURL() string {
+	return v.AvatarURL
+}
+
+// getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo includes the requested fields of the GraphQL interface UserBasicInfo.
+//
+// getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo is implemented by the following types:
+// getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser
+type getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo interface {
+	implementsGraphQLInterfacegetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo()
+	// GetTypename returns the receiver's concrete GraphQL type-name (see interface doc for possible values).
+	GetTypename() string
+	// GetAvatarURL returns the interface-field "avatarURL" from its implementation.
+	GetAvatarURL() string
+}
+
+func (v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser) implementsGraphQLInterfacegetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo() {
+}
+
+func __unmarshalgetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo(b []byte, v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo) error {
+	if string(b) == "null" {
+		return nil
+	}
+
+	var tn struct {
+		TypeName string `json:"__typename"`
+	}
+	err := json.Unmarshal(b, &tn)
+	if err != nil {
+		return err
+	}
+
+	switch tn.TypeName {
+	case "User":
+		*v = new(getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser)
+		return json.Unmarshal(b, *v)
+	case "":
+		return fmt.Errorf(
+			"response was missing UserBasicInfo.__typename")
+	default:
+		return fmt.Errorf(
+			`unexpected concrete type for getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo: "%v"`, tn.TypeName)
+	}
+}
+
+func __marshalgetRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo(v *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo) ([]byte, error) {
+
+	var typename string
+	switch v := (*v).(type) {
+	case *getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser:
+		typename = "User"
+
+		result := struct {
+			TypeName string `json:"__typename"`
+			*getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUser
+		}{typename, v}
+		return json.Marshal(result)
+	case nil:
+		return []byte("null"), nil
+	default:
+		return nil, fmt.Errorf(
+			`unexpected concrete type for getRepositoryBranchStatusOwnerRepositoryBuildsRepositoryBuildsConnectionEdgesRepositoryBuildEdgeNodeBuildInitializerUserBasicInfo: "%T"`, v)
+	}
+}
+
+// getRepositoryBranchStatusResponse is returned by getRepositoryBranchStatus on success.
+type getRepositoryBranchStatusResponse struct {
+	OwnerRepository getRepositoryBranchStatusOwnerRepository `json:"ownerRepository"`
+}
+
+// GetOwnerRepository returns getRepositoryBranchStatusResponse.OwnerRepository, and is useful for accessing the field via an interface.
+func (v *getRepositoryBranchStatusResponse) GetOwnerRepository() getRepositoryBranchStatusOwnerRepository {
+	return v.OwnerRepository
+}
 
 // getViewerResponse is returned by getViewer on success.
 type getViewerResponse struct {
@@ -18,17 +292,77 @@ func (v *getViewerResponse) GetViewer() getViewerViewerUser { return v.Viewer }
 
 // getViewerViewerUser includes the requested fields of the GraphQL type User.
 type getViewerViewerUser struct {
-	Id string `json:"id"`
+	Id        string `json:"id"`
+	AvatarURL string `json:"avatarURL"`
 }
 
 // GetId returns getViewerViewerUser.Id, and is useful for accessing the field via an interface.
 func (v *getViewerViewerUser) GetId() string { return v.Id }
+
+// GetAvatarURL returns getViewerViewerUser.AvatarURL, and is useful for accessing the field via an interface.
+func (v *getViewerViewerUser) GetAvatarURL() string { return v.AvatarURL }
+
+// The query or mutation executed by getRepositoryBranchStatus.
+const getRepositoryBranchStatus_Operation = `
+query getRepositoryBranchStatus ($Platform: String!, $Owner: String!, $RepositoryName: String!, $Branch: String!) {
+	ownerRepository(platform: $Platform, owner: $Owner, name: $RepositoryName) {
+		id
+		builds(branch: $Branch, last: 1) {
+			edges {
+				node {
+					status
+					buildCreatedTimestamp
+					changeMessage
+					durationInSeconds
+					initializer {
+						__typename
+						avatarURL
+					}
+				}
+			}
+		}
+	}
+}
+`
+
+func getRepositoryBranchStatus(
+	ctx context.Context,
+	client graphql.Client,
+	Platform string,
+	Owner string,
+	RepositoryName string,
+	Branch string,
+) (*getRepositoryBranchStatusResponse, error) {
+	req := &graphql.Request{
+		OpName: "getRepositoryBranchStatus",
+		Query:  getRepositoryBranchStatus_Operation,
+		Variables: &__getRepositoryBranchStatusInput{
+			Platform:       Platform,
+			Owner:          Owner,
+			RepositoryName: RepositoryName,
+			Branch:         Branch,
+		},
+	}
+	var err error
+
+	var data getRepositoryBranchStatusResponse
+	resp := &graphql.Response{Data: &data}
+
+	err = client.MakeRequest(
+		ctx,
+		req,
+		resp,
+	)
+
+	return &data, err
+}
 
 // The query or mutation executed by getViewer.
 const getViewer_Operation = `
 query getViewer {
 	viewer {
 		id
+		avatarURL
 	}
 }
 `

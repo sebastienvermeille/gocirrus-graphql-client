@@ -1,5 +1,25 @@
 query getViewer {
   viewer {
-    id
+    id,
+    avatarURL,
+  }
+}
+
+query getRepositoryBranchStatus($Platform: String!, $Owner: String!, $RepositoryName: String!, $Branch: String!) {
+  ownerRepository(platform: $Platform, owner:$Owner, name:$RepositoryName) {
+    id,
+    builds(branch: $Branch, last: 1){
+      edges {
+        node {
+          status,
+          buildCreatedTimestamp
+          changeMessage
+          durationInSeconds
+          initializer {
+            avatarURL,
+          }
+        }
+      }
+    }
   }
 }
